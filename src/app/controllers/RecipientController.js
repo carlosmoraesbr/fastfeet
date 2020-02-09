@@ -13,12 +13,6 @@ class RecipientController {
       zipcode: Yup.number().required(),
     });
 
-    if (!req.userAdministrator) {
-      return res
-        .status(401)
-        .json({ error: 'You dor not have administrator permission' });
-    }
-
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
