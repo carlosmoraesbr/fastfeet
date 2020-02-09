@@ -22,7 +22,7 @@ routes.post('/recipients', RecipientController.store);
 
 routes.put('/users', UserController.update);
 
-routes.get('/deliveryman', DeliverymanController.index);
+routes.get('/deliverymen', DeliverymanController.index);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
