@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { startOfHour, parseISO, isBefore } from 'date-fns';
 import User from '../models/User';
 import Order from '../models/Order';
 
@@ -28,11 +29,36 @@ class OrderController {
         .json({ error: 'You can only create orders with deliverymen' });
     }
 
+    /**
+     * Check for past dates
+     */
+    const hourStart = startOfHour(parseISO(start_date));
+
+    if (isBefore(hourStart, new Date())) {
+      return res.status(400).json({ error: 'Past dates are not permitted' });
+    }
+
+    /**
+     * Check date availability
+     */
+
+    const checkAvailability = await Order.findOne({
+      where: {
+        deliveryman_id,
+        canceled_at: null,
+        start_date: hourStart,
+      },
+    });
+
+    if (checkAvailability) {
+      return res.status(400).json({ error: 'Order date is not available' });
+    }
+
     const order = await Order.create({
       user_id: req.userId,
       deliveryman_id,
       recipient_id,
-      start_date,
+      start_date: hourStart,
     });
 
     return res.json(order);
