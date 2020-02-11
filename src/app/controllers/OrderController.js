@@ -1,9 +1,49 @@
 import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore } from 'date-fns';
 import User from '../models/User';
+import File from '../models/File';
 import Order from '../models/Order';
+import Recipient from '../models/Recipient';
 
 class OrderController {
+  async index(req, res) {
+    const orders = await Order.findAll({
+      where: { deliveryman_id: req.userId, canceled_at: null },
+      order: ['start_date'],
+      attributes: ['id', 'start_date'],
+      include: [
+        {
+          model: User,
+          as: 'deliveryman',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: [
+            'id',
+            'name',
+            'street',
+            'number',
+            'complement',
+            'state',
+            'city',
+            'zipcode',
+          ],
+        },
+      ],
+    });
+
+    return res.json(orders);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       deliveryman_id: Yup.number().required(),

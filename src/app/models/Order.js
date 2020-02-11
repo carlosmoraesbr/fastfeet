@@ -18,7 +18,7 @@ class Order extends Model {
   static associate(models) {
     this.belongsTo(models.User, {
       foreignKey: 'deliveryman_id',
-      as: 'user',
+      as: 'deliveryman',
     });
     this.belongsTo(models.Recipient, {
       foreignKey: 'recipient_id',
