@@ -7,10 +7,14 @@ import Recipient from '../models/Recipient';
 
 class OrderController {
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     const orders = await Order.findAll({
       where: { deliveryman_id: req.userId, canceled_at: null },
       order: ['start_date'],
       attributes: ['id', 'start_date'],
+      limit: 20,
+      offset: (page - 1) * 20,
       include: [
         {
           model: User,
