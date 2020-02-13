@@ -35,6 +35,7 @@ routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
 
 routes.get('/notifications', NotificationController.index);
+routes.put('/notifications/:id', NotificationController.update);
 
 routes.get('/delivery/:id/problems', DeliveryProblemsController.index);
 routes.post('/delivery/:id/problems', DeliveryProblemsController.store);
