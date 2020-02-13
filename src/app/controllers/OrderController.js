@@ -65,11 +65,11 @@ class OrderController {
     /**
      * Check is deliveryman_id is a deliveryman
      */
-    const isDeliveryman = await User.findOne({
+    const checkisDeliveryman = await User.findOne({
       where: { id: deliveryman_id, deliveryman: true },
     });
 
-    if (!isDeliveryman) {
+    if (!checkisDeliveryman) {
       return res
         .status(401)
         .json({ error: 'You can only create orders with deliverymen' });

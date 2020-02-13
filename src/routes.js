@@ -10,6 +10,7 @@ import DeliverymanController from './app/controllers/DeliverymanController';
 import OrderController from './app/controllers/OrderController';
 import DeliveryController from './app/controllers/DeliveryController';
 import DeliveryProblemsController from './app/controllers/DeliveryProblemsController';
+import NotificationController from './app/controllers/NotificationController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -32,6 +33,8 @@ routes.get('/deliveryman/:id/deliveries', DeliveryController.index);
 
 routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
+
+routes.get('/notifications', NotificationController.index);
 
 routes.get('/delivery/:id/problems', DeliveryProblemsController.index);
 routes.post('/delivery/:id/problems', DeliveryProblemsController.store);
