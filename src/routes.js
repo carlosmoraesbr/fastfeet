@@ -33,6 +33,7 @@ routes.get('/deliveryman/:id/deliveries', DeliveryController.index);
 
 routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
+routes.delete('/orders/:id', OrderController.delete);
 
 routes.get('/notifications', NotificationController.index);
 routes.put('/notifications/:id', NotificationController.update);
