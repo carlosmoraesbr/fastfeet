@@ -133,7 +133,12 @@ class OrderController {
         {
           model: User,
           as: 'deliveryman',
-          attributes: ['name', 'email'],
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: ['id', 'name'],
         },
       ],
     });
@@ -159,7 +164,14 @@ class OrderController {
     await Mail.sendMail({
       to: `${order.deliveryman.name} <${order.deliveryman.email}>`,
       subject: 'Encomenda cancelada',
-      text: 'Você tem um novo cancelamento',
+      template: 'cancellation',
+      context: {
+        deliveryman: order.deliveryman.name,
+        recipient: order.recipient.name,
+        date: format(order.start_date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+      },
     });
 
     return res.json(order);
