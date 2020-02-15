@@ -7,7 +7,8 @@ import Order from '../models/Order';
 import Recipient from '../models/Recipient';
 import Notification from '../schemas/Notification';
 
-import Mail from '../../lib/Mail';
+import CancellationMail from '../jobs/CancellationMail';
+import Queue from '../../lib/Queue';
 
 class OrderController {
   async index(req, res) {
@@ -161,17 +162,8 @@ class OrderController {
 
     await order.save();
 
-    await Mail.sendMail({
-      to: `${order.deliveryman.name} <${order.deliveryman.email}>`,
-      subject: 'Encomenda cancelada',
-      template: 'cancellation',
-      context: {
-        deliveryman: order.deliveryman.name,
-        recipient: order.recipient.name,
-        date: format(order.start_date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
-          locale: pt,
-        }),
-      },
+    await Queue.add(CancellationMail.key, {
+      order,
     });
 
     return res.json(order);
