@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import { isBefore, subHours } from 'date-fns';
 
 class Order extends Model {
   static init(sequelize) {
@@ -7,6 +8,18 @@ class Order extends Model {
         product: Sequelize.STRING,
         start_date: Sequelize.DATE,
         canceled_at: Sequelize.DATE,
+        past: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return isBefore(this.start_date, new Date());
+          },
+        },
+        cancelable: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return isBefore(new Date(), subHours(this.start_date, 2));
+          },
+        },
       },
       {
         sequelize,
