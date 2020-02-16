@@ -5,10 +5,10 @@ import User from '../models/User';
 
 class DeliveryController {
   async index(req, res) {
-    const { id } = req.params;
+    const { deliverymanId } = req.params;
 
     const checkUserDeliveryman = await User.findOne({
-      where: { id, deliveryman: true },
+      where: { deliverymanId, deliveryman: true },
     });
 
     if (!checkUserDeliveryman) {
@@ -20,7 +20,7 @@ class DeliveryController {
 
     const orders = await Order.findAll({
       where: {
-        deliveryman_id: id,
+        deliveryman_id: deliverymanId,
         canceled_at: null,
         start_date: {
           [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)],

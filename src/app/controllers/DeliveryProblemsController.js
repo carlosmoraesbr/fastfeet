@@ -1,26 +1,96 @@
+import * as Yup from 'yup';
+import Order from '../models/Order';
 import User from '../models/User';
+import Recipient from '../models/Recipient';
+import DeliveryProblems from '../models/DeliveryProblems';
+
+import CancellationDeliveryProblemsMail from '../jobs/CancellationDeliveryProblemsMail';
+import Queue from '../../lib/Queue';
 
 class DeliveryController {
   async index(req, res) {
-    const { id } = req.params;
+    const { orderId } = req.params;
 
-    const checkUserDeliveryman = await User.findOne({
-      where: { id, deliveryman: true },
+    const deliveryProblem = await DeliveryProblems.findAll({
+      where: { order_id: orderId },
+      attributes: ['id', 'description'],
+      include: [
+        {
+          model: Order,
+          as: 'order',
+          attributes: ['id', 'product', 'start_date'],
+        },
+      ],
     });
 
-    if (!checkUserDeliveryman) {
-      return res.status(401).json({ error: 'User is not a deliveryman' });
-    }
-
-    return res.json();
+    return res.json(deliveryProblem);
   }
 
   async store(req, res) {
-    return res.json();
+    const { orderId } = req.params;
+
+    const schema = Yup.object().shape({
+      description: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const checkIsOrder = await Order.findOne({
+      where: { id: orderId },
+    });
+
+    if (!checkIsOrder) {
+      return res.status(401).json({ error: 'Order not exists' });
+    }
+
+    const { description } = req.body;
+
+    const deliveryProblem = await DeliveryProblems.create({
+      order_id: orderId,
+      description,
+    });
+
+    return res.json(deliveryProblem);
   }
 
   async delete(req, res) {
-    return res.json();
+    const { deliveryProblemId } = req.params;
+
+    const deliveryProblem = await DeliveryProblems.findByPk(deliveryProblemId, {
+      include: [
+        {
+          model: Order,
+          as: 'order',
+          attributes: ['id', 'product'],
+          include: [
+            {
+              model: User,
+              as: 'deliveryman',
+              attributes: ['id', 'name', 'email'],
+            },
+            {
+              model: Recipient,
+              as: 'recipient',
+              attributes: ['id', 'name'],
+            },
+          ],
+        },
+      ],
+    });
+
+    const { order } = deliveryProblem;
+
+    order.canceled_at = new Date();
+
+    await order.save();
+
+    await Queue.add(CancellationDeliveryProblemsMail.key, {
+      deliveryProblem,
+    });
+
+    return res.json(deliveryProblem);
   }
 }
 

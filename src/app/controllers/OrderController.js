@@ -22,6 +22,11 @@ class OrderController {
       offset: (page - 1) * 20,
       include: [
         {
+          model: File,
+          as: 'signature',
+          attributes: ['id', 'path', 'url'],
+        },
+        {
           model: User,
           as: 'deliveryman',
           attributes: ['id', 'name'],
@@ -56,6 +61,7 @@ class OrderController {
   async store(req, res) {
     const schema = Yup.object().shape({
       deliveryman_id: Yup.number().required(),
+      recipient_id: Yup.number().required(),
       start_date: Yup.date().required(),
     });
 
@@ -129,7 +135,7 @@ class OrderController {
   }
 
   async delete(req, res) {
-    const order = await Order.findByPk(req.params.id, {
+    const order = await Order.findByPk(req.params.orderId, {
       include: [
         {
           model: User,
@@ -167,6 +173,51 @@ class OrderController {
     });
 
     return res.json(order);
+  }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number().required(),
+      product: Yup.string(),
+      deliveryman_id: Yup.number(),
+      recipient_id: Yup.number(),
+      signature_id: Yup.number(),
+      start_date: Yup.date(),
+      end_date: Yup.date(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const { id } = req.body;
+
+    const order = await Order.findOne({
+      where: { id },
+    });
+
+    if (!order) {
+      return res.status(400).json({ error: 'Order does not exist' });
+    }
+
+    const {
+      product,
+      deliveryman_id,
+      recipient_id,
+      signature_id,
+      start_date,
+
+      end_date,
+    } = await order.update(req.body);
+
+    return res.json({
+      product,
+      deliveryman_id,
+      recipient_id,
+      signature_id,
+      start_date,
+      end_date,
+    });
   }
 }
 

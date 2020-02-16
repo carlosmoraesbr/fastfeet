@@ -23,29 +23,40 @@ routes.post('/sessions', SessionController.store);
 
 routes.use(authMiddleware);
 
+// Recipients
 routes.post('/recipients', RecipientController.store);
 routes.put('/recipients', RecipientController.update);
 
+// Users
 routes.put('/users', UserController.update);
 
+// Deliverymen
+routes.post('/deliverymen', UserController.store);
 routes.get('/deliverymen', DeliverymanController.index);
-routes.get('/deliverymen/:deliverymanId/available', AvailableController.index);
-routes.get('/deliverymen/:id/deliveries', DeliveryController.index);
+routes.put('/deliverymen', UserController.update);
 
+routes.get('/deliverymen/:deliverymanId/available', AvailableController.index);
+routes.get('/deliverymen/:deliverymanId/deliveries', DeliveryController.index);
+
+// Orders
 routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
-routes.delete('/orders/:id', OrderController.delete);
+routes.put('/orders', OrderController.update);
+routes.delete('/orders/:orderId', OrderController.delete);
 
+// Notifications
 routes.get('/notifications', NotificationController.index);
 routes.put('/notifications/:id', NotificationController.update);
 
-routes.get('/delivery/:id/problems', DeliveryProblemsController.index);
-routes.post('/delivery/:id/problems', DeliveryProblemsController.store);
+// Problems
+routes.get('/delivery/:orderId/problems', DeliveryProblemsController.index);
+routes.post('/delivery/:orderId/problems', DeliveryProblemsController.store);
 routes.delete(
-  '/problem/:id/cancel-delivery',
+  '/problem/:deliveryProblemId/cancel-delivery',
   DeliveryProblemsController.delete
 );
 
+// Files
 routes.post('/files', upload.single('file'), FileController.store);
 
 export default routes;
