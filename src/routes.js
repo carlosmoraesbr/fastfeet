@@ -11,6 +11,7 @@ import OrderController from './app/controllers/OrderController';
 import DeliveryController from './app/controllers/DeliveryController';
 import DeliveryProblemsController from './app/controllers/DeliveryProblemsController';
 import NotificationController from './app/controllers/NotificationController';
+import AvailableController from './app/controllers/AvailableController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -27,9 +28,9 @@ routes.put('/recipients', RecipientController.update);
 
 routes.put('/users', UserController.update);
 
-routes.get('/deliveryman', DeliverymanController.index);
-
-routes.get('/deliveryman/:id/deliveries', DeliveryController.index);
+routes.get('/deliverymen', DeliverymanController.index);
+routes.get('/deliverymen/:deliverymanId/available', AvailableController.index);
+routes.get('/deliverymen/:id/deliveries', DeliveryController.index);
 
 routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
