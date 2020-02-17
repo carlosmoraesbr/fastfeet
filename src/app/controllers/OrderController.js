@@ -8,6 +8,7 @@ import Recipient from '../models/Recipient';
 import Notification from '../schemas/Notification';
 
 import CancellationMail from '../jobs/CancellationMail';
+import RegistrationMail from '../jobs/RegistrationMail';
 import Queue from '../../lib/Queue';
 
 class OrderController {
@@ -62,6 +63,7 @@ class OrderController {
     const schema = Yup.object().shape({
       deliveryman_id: Yup.number().required(),
       recipient_id: Yup.number().required(),
+      product: Yup.string().required(),
       start_date: Yup.date().required(),
     });
 
@@ -69,7 +71,7 @@ class OrderController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { deliveryman_id, recipient_id, start_date } = req.body;
+    const { deliveryman_id, recipient_id, start_date, product } = req.body;
 
     /**
      * Check is deliveryman_id is a deliveryman
@@ -109,11 +111,27 @@ class OrderController {
       return res.status(400).json({ error: 'Order date is not available' });
     }
 
-    const order = await Order.create({
+    const { id } = await Order.create({
       user_id: req.userId,
       deliveryman_id,
       recipient_id,
+      product,
       start_date: hourStart,
+    });
+
+    const order = await Order.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'deliveryman',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: ['id', 'name'],
+        },
+      ],
     });
 
     /**
@@ -125,6 +143,10 @@ class OrderController {
       "'dia' dd 'de' MMMM', às' H:mm'h'",
       { locale: pt }
     );
+
+    await Queue.add(RegistrationMail.key, {
+      order,
+    });
 
     await Notification.create({
       content: `Nova encomenda de ${user.name} para ${formattedDate}`,

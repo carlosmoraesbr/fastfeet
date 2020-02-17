@@ -63,7 +63,7 @@ class DeliveryController {
         {
           model: Order,
           as: 'order',
-          attributes: ['id', 'product'],
+          attributes: ['id', 'product', 'start_date'],
           include: [
             {
               model: User,
@@ -79,12 +79,6 @@ class DeliveryController {
         },
       ],
     });
-
-    const { order } = deliveryProblem;
-
-    order.canceled_at = new Date();
-
-    await order.save();
 
     await Queue.add(CancellationDeliveryProblemsMail.key, {
       deliveryProblem,

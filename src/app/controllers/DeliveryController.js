@@ -8,7 +8,7 @@ class DeliveryController {
     const { deliverymanId } = req.params;
 
     const checkUserDeliveryman = await User.findOne({
-      where: { deliverymanId, deliveryman: true },
+      where: { id: deliverymanId, deliveryman: true },
     });
 
     if (!checkUserDeliveryman) {

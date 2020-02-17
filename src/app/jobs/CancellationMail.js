@@ -3,14 +3,16 @@ import pt from 'date-fns/locale/pt';
 import Mail from '../../lib/Mail';
 
 class CancellationMail {
-  get Key() {
+  get key() {
     return 'CancellationMail';
   }
 
   async handle({ data }) {
     const { order } = data;
 
-    await Mail.sendMail({
+    console.log('A fila executou');
+
+    await Mail.senddMail({
       to: `${order.deliveryman.name} <${order.deliveryman.email}>`,
       subject: 'Encomenda cancelada',
       template: 'cancellation',
