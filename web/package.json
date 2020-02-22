@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "react-scripts start",
-    "buid": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "buid": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -15,6 +15,7 @@
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "babel-plugin-root-import": "^6.4.1",
+    "customize-cra": "^0.9.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.10.0",
@@ -24,7 +25,8 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "react-app-rewired": "^2.1.5"
   },
   "dependencies": {
     "history": "^4.10.1",
