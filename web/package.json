@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@rocketseat/unform": "^1.6.2",
+    "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "history": "^4.10.1",
     "immer": "^5.3.6",
