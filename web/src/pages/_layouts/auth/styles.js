@@ -14,6 +14,10 @@ export const Content = styled.div`
   max-width: 315px;
   text-align: center;
 
+  img {
+    width: 100%;
+  }
+
   form {
     display: flex;
     flex-direction: column;

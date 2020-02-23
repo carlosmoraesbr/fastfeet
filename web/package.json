@@ -29,6 +29,7 @@
     "react-app-rewired": "^2.1.5"
   },
   "dependencies": {
+    "@rocketseat/unform": "^1.6.2",
     "dotenv": "^8.2.0",
     "history": "^4.10.1",
     "polished": "^3.4.4",
