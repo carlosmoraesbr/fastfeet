@@ -29,7 +29,7 @@ class DeliveryController {
       include: [
         {
           model: User,
-          as: 'user',
+          as: 'deliveryman',
           attributes: ['name'],
         },
       ],
