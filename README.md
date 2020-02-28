@@ -3,7 +3,7 @@
 </h1>
 
 <h3 align="center">
-  Uma aplicação completa (Back-end, Front-end e Mobile) para uma transportadora fictícia, o FastFeet
+  Uma aplicação completa (Back-end, Front-end e Mobile) para uma transportadora fictícia, o FastFeet.
 </h3>
 
 <h3 align="center">
